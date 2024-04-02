@@ -1,0 +1,51 @@
+{
+  "name": "realworld_be",
+  "version": "1.0.0",
+  "description": "this is the real world project, this project is cloning medium website endpoints",
+  "main": "index.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/server.js",
+    "dev": "nodemon src/server.ts"
+  },
+  "dependencies": {
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/morgan": "^1.9.9",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "chalk": "4.1.2",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "i18next": "^23.8.1",
+    "i18next-fs-backend": "^2.3.1",
+    "i18next-http-middleware": "^3.5.0",
+    "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.0.3",
+    "pg": "^8.11.3",
+    "typeorm": "^0.3.20"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "_moduleAliases": {
+    "@src": "src",
+    "@routes": "src/routes",
+    "@controllers": "src/controllers",
+    "@constants": "src/constants",
+    "@middlewares": "src/middlewares",
+    "@models": "src/models",
+    "@images": "src/images",
+    "@utils": "src/utils",
+    "@locales": "src/locales",
+    "@types": "src/types"
+  },
+  "author": "",
+  "license": "ISC"
+}
