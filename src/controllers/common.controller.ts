@@ -35,3 +35,21 @@ export const internalServerError = (
     errorDesc: t('commonErrors_internalServerError'),
   });
 };
+
+export const validationError = (
+  validationObject: { [key: string]: any },
+  req: Request,
+  res: Response
+) => {
+  const { t } = req.i18n;
+  const errors: { [index: string]: any } = {};
+  Object.keys(validationObject).forEach((item) => {
+    if (!validationObject[item])
+      errors[item] = `${item} ${t('fieldRequired')} `;
+  });
+
+  res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+    error: errors,
+    errorDesc: t('commonErrors_validationError'),
+  });
+};

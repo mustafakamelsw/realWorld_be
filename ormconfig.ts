@@ -6,6 +6,6 @@ export const AppDataSource = new DataSource({
   username: 'mustafa',
   password: 'Aa123123',
   database: 'test',
-  entities: ['src/entity/*.ts'],
+  entities: ['src/entities/*.ts'],
   synchronize: true,
 });

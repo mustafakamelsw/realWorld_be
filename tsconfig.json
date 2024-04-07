@@ -9,18 +9,6 @@
     "checkJs": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "baseUrl": "src",
-    "paths": {
-      "@src/*": ["./*"],
-      "@routes/*": ["routes/*"],
-      "@controllers/*": ["controllers/*"],
-      "@constants/*": ["constants/*"],
-      "@middlewares/*": ["middlewares/*"],
-      "@models/*": ["models/*"],
-      "@images/*": ["images/*"],
-      "@utils/*": ["utils/*"],
-      "@locales/*": ["locales/*"],
-      "@types/*": ["types/*"]
-    }
+    "baseUrl": "src"
   }
 }
