@@ -1,4 +1,16 @@
 {
   "fieldRequired": " field is required",
-  "commonErrors_validationError": "One or more fields are required"
+  "commonErrors_validationError": "One or more fields are required",
+  "USER": {
+    "userExists": "User are already exists",
+    "emailNotValid": "Email is not valid",
+    "loginValidationError": "One or more fields are not valid",
+    "emailValidationError": "Email not valid",
+    "userNotFound": "User is not found"
+  },
+  "COMMON_ERROR": {
+    "badRequest": "Bad request",
+    "notFound": "Not found",
+    "internalServerError": "Internal Server Error"
+  }
 }
