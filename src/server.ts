@@ -4,19 +4,18 @@ import { createServer } from 'http';
 import i18next from 'i18next';
 import I18NexFsBackend from 'i18next-fs-backend';
 import middleware from 'i18next-http-middleware';
+import { AppDataSource } from '../ormconfig';
 import {
   CURRENT_USER,
   IMAGES_PATH,
   PROFILE_URLS,
   USERS_URLs,
 } from './constants/APP_PATH';
-import { logger } from './middleware/logger';
-import { AppDataSource } from '../ormconfig';
 import { notFoundError, serverError } from './controllers/common.controller';
-import { userRouter } from './routes/users.router';
+import { logger } from './middleware/logger';
 import { currentUserRouter } from './routes/currentUser.router';
 import { profileRouter } from './routes/profile.router';
-
+import { userRouter } from './routes/users.router';
 const app: Express = express();
 const PORT = 3000;
 const server = createServer(app);

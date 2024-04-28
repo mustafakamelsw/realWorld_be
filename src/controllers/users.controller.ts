@@ -1,12 +1,12 @@
-import { Request, Response } from 'express';
-import { internalServerError, validationError } from './common.controller';
 import { compare, hash } from 'bcrypt';
-import { User } from '../entities/user';
-import { AppDataSource } from '../../ormconfig';
-import { STATUS_CODES } from '../types/statusCodes';
-import validator from 'validator';
+import { Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
+import validator from 'validator';
+import { AppDataSource } from '../../ormconfig';
 import { JWT_SECRET } from '../constants/security';
+import { User } from '../entities/user';
+import { STATUS_CODES } from '../types/statusCodes';
+import { internalServerError, validationError } from './common.controller';
 export const login = async (req: Request, res: Response) => {
   const { t } = req;
   const { email, username, password } = req.body;
@@ -55,7 +55,7 @@ export const login = async (req: Request, res: Response) => {
           },
           JWT_SECRET,
           {
-            expiresIn: '1h',
+            expiresIn: '1d',
           }
         );
         return res.status(STATUS_CODES.OK).json({
@@ -124,4 +124,39 @@ export const register = async (req: Request, res: Response) => {
       error: t('USER.emailNotValid'),
     });
   }
+};
+
+export const updateUser = async (req: Request | any, res: Response) => {
+  const { file, body, user } = req;
+  const t = req.i18n;
+  const userRepo = AppDataSource.getRepository(User);
+
+  userRepo
+    .update(
+      { id: user.id },
+      {
+        email: body.email,
+        bio: body?.bio,
+        image: file.path,
+      }
+    )
+    .then(async (result) => {
+      const updatedUser = await userRepo.findOneBy({ id: user.id });
+      if (updatedUser) {
+        return res.status(STATUS_CODES.CREATED).json({
+          user: {
+            email: updatedUser.email,
+            bio: updatedUser.bio,
+            image: updatedUser.image,
+          },
+        });
+      } else {
+        const error = new Error(t('COMMON_ERROR.somethingWentWrong'));
+        return internalServerError(error, req, res);
+      }
+    })
+    .catch((err) => {
+      console.log({ err });
+      return internalServerError(err, req, res);
+    });
 };

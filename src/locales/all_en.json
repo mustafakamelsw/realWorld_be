@@ -11,6 +11,9 @@
   "COMMON_ERROR": {
     "badRequest": "Bad request",
     "notFound": "Not found",
-    "internalServerError": "Internal Server Error"
+    "internalServerError": "Internal Server Error",
+    "notAuthorized": "Not authorized",
+    "forbidden": "Forbidden",
+    "somethingWentWrong": "Something went wrong"
   }
 }

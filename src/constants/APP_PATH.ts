@@ -4,6 +4,7 @@ export const USERS_URLs = {
   MAIN_PATH: '/api/users',
   LOGIN: '/login',
   REGISTER: '/',
+  UPDATE: '/',
 };
 
 export const CURRENT_USER = {

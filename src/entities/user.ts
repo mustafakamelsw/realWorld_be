@@ -12,4 +12,8 @@ export class User extends AppEntity {
   email!: string;
   @Column()
   password!: string;
+  @Column({ default: '' })
+  bio!: string;
+  @Column({ default: '' })
+  image!: string;
 }
