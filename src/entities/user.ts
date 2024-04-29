@@ -16,4 +16,6 @@ export class User extends AppEntity {
   bio!: string;
   @Column({ default: '' })
   image!: string;
+  @Column({ default: false })
+  following!: boolean;
 }
