@@ -14,6 +14,8 @@
     "internalServerError": "Internal Server Error",
     "notAuthorized": "Not authorized",
     "forbidden": "Forbidden",
-    "somethingWentWrong": "Something went wrong"
+    "somethingWentWrong": "Something went wrong",
+    "fieldRequired": " field is required",
+    "articleNotFound": "Article not found"
   }
 }

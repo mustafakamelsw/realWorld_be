@@ -19,3 +19,29 @@ export const PROFILE_URLS = {
   FOLLOW_USER: '/:username/follow',
   UNFOLLOW_USER: '/:username/follow',
 };
+
+export const ARTICLE_URLS = {
+  MAIN_PATH: '/api/articles',
+  GET_ARTICLE: '/:slug',
+  CREATE_ARTICLE: '/',
+  UPDATE_ARTICLE: '/:slug',
+  // DELETE_ARTICLE: '/:slug',
+  // FAVORITE_ARTICLE: '/:slug/favorite',
+  // UNFAVORITE_ARTICLE: '/:slug/favorite',
+  // GET_FEED: '/feed',
+  // GET_TAGS: '/tags',
+  // GET_TAG: '/tags/:tag',
+  // GET_SEARCH: '/search',
+  // GET_COMMENTS: '/:slug/comments',
+  // CREATE_COMMENT: '/:slug/comments',
+  // UPDATE_COMMENT: '/:slug/comments/:commentId',
+  // DELETE_COMMENT: '/:slug/comments/:commentId',
+  // GET_AUTHOR: '/:username/articles',
+  // GET_AUTHOR_FEED: '/:username/feed',
+};
+
+export const TAG_URLS = {
+  MAIN_PATH: '/api/tags',
+  GET_TAGS: '/',
+  CREATE_TAG: '/create',
+};

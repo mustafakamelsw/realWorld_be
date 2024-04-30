@@ -23,7 +23,10 @@ export const getValidationErrorMessage = (
   let errors: Error[] = [];
   Object.keys(fields).forEach((field) => {
     if (fields[field] === undefined) {
-      errors.push({ field, message: field + ' ' + t('errors_isRequired') });
+      errors.push({
+        field,
+        message: field + ' ' + t('COMMON_ERROR.fieldRequired'),
+      });
     }
   });
   customErrorMessage.errors = errors;
