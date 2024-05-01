@@ -1,6 +1,7 @@
-import { Column, Entity } from 'typeorm';
-import { AppEntity } from './utils/Entity';
 import { IsEmail, Matches } from 'class-validator';
+import { Column, Entity, ManyToMany } from 'typeorm';
+import { Article } from './article.entity';
+import { AppEntity } from './utils/Entity';
 
 @Entity()
 export class User extends AppEntity {
@@ -18,4 +19,6 @@ export class User extends AppEntity {
   image!: string;
   @Column('simple-array', { nullable: true })
   follow!: number[];
+  @ManyToMany(() => Article, (article) => article.favoritedBy)
+  favorites!: Article[];
 }

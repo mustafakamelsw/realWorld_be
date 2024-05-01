@@ -31,7 +31,7 @@ export const internalServerError = (
 ) => {
   const { t } = req.i18n;
   return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
-    error: err,
+    error: err?.message ? err.message : err,
     errorDesc: t('COMMON_ERROR.internalServerError'),
   });
 };

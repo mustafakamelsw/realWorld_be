@@ -17,5 +17,8 @@
     "somethingWentWrong": "Something went wrong",
     "fieldRequired": " field is required",
     "articleNotFound": "Article not found"
+  },
+  "ARTICLE": {
+    "forbidden": "update article is forbidden"
   }
 }

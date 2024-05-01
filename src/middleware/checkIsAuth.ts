@@ -3,6 +3,7 @@ import { STATUS_CODES } from '../types/statusCodes';
 import { verify } from 'jsonwebtoken';
 import { JWT_SECRET } from '../constants/security';
 import { internalServerError } from '../controllers/common.controller';
+import { AnyError } from 'typeorm';
 
 export const checkIsAuth = (
   req: Request,
@@ -21,8 +22,7 @@ export const checkIsAuth = (
     const user = verify(token, JWT_SECRET);
     (req as any).user = user;
     next();
-  } catch (error) {
-    const newError = new Error('check is auth:' + error);
-    return internalServerError(newError, req, res);
+  } catch (error: any) {
+    return internalServerError(error, req, res);
   }
 };

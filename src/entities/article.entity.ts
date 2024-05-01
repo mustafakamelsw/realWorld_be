@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToMany, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany } from 'typeorm';
 import { AppEntity } from './utils/Entity';
 import { User } from './user';
 import { Tag } from './tag.entity';
@@ -15,4 +15,7 @@ export class Article extends AppEntity {
   tagList!: Tag[];
   @JoinColumn()
   author!: User;
+  @ManyToMany(() => User, (user) => user.favorites)
+  @JoinTable()
+  favoritedBy!: User[];
 }

@@ -87,6 +87,12 @@ export const updateArticle = async (req: Request, res: Response) => {
           errorDesc: t('ARTICLE.articleNotFound'),
         });
       }
+      if ((req as any).user?.id == article.author) {
+        return res.status(STATUS_CODES.FORBIDDEN).json({
+          error: t('COMMON_ERROR.forbidden'),
+          errorDesc: t('ARTICLE.forbidden'),
+        });
+      }
       article.title = body.title || article.title;
       article.description = body.description || article.description;
       article.body = body.body || article.body;
@@ -127,6 +133,91 @@ export const getArticles = (req: Request, res: Response) => {
     .getMany()
     .then((articles) => {
       return res.status(STATUS_CODES.OK).json({ articles });
+    })
+    .catch((error) => {
+      return internalServerError(error, req, res);
+    });
+};
+
+export const favoriteArticle = (req: Request, res: Response) => {
+  const articleRepo = AppDataSource.getRepository(Article);
+  const userRepo = AppDataSource.getRepository(User);
+  const { slug } = req.params;
+  const { user } = req as any;
+
+  const { t } = req;
+  articleRepo
+    .findOne({
+      where: { id: Number(slug) },
+      relations: {
+        favoritedBy: true,
+      },
+    })
+    .then(async (article) => {
+      if (!article) {
+        return res.status(STATUS_CODES.NOT_FOUND).json({
+          error: t('COMMON_ERROR.notFound'),
+          errorDesc: t('ARTICLE.articleNotFound'),
+        });
+      }
+      const currentUser = await userRepo.findOne({
+        where: {
+          id: Number(user.id),
+        },
+      });
+      if (currentUser) {
+        if (article.favoritedBy?.length > 0) {
+          article.favoritedBy.push(user);
+        } else {
+          article.favoritedBy = [user];
+        }
+        await articleRepo.save(article);
+        return res.status(STATUS_CODES.CREATED).json({ article });
+      }
+    })
+    .catch((error) => {
+      return internalServerError(error, req, res);
+    });
+};
+
+export const unfavoriteArticle = (req: Request, res: Response) => {
+  const articleRepo = AppDataSource.getRepository(Article);
+  const userRepo = AppDataSource.getRepository(User);
+  const { slug } = req.params;
+  const { user } = req as any;
+
+  const { t } = req;
+  articleRepo
+    .findOne({
+      where: { id: Number(slug) },
+      relations: {
+        favoritedBy: true,
+      },
+    })
+    .then(async (article) => {
+      if (!article) {
+        return res.status(STATUS_CODES.NOT_FOUND).json({
+          error: t('COMMON_ERROR.notFound'),
+          errorDesc: t('ARTICLE.articleNotFound'),
+        });
+      }
+      const currentUser = await userRepo.findOne({
+        where: {
+          id: Number(user.id),
+        },
+      });
+      if (currentUser) {
+        const find = article.favoritedBy.find(
+          (item) => item.id === currentUser.id
+        );
+        if (find) {
+          article.favoritedBy = article.favoritedBy.filter(
+            (item) => item.id !== currentUser.id
+          );
+        }
+        await articleRepo.save(article);
+        return res.status(STATUS_CODES.CREATED).json({ article });
+      }
     })
     .catch((error) => {
       return internalServerError(error, req, res);

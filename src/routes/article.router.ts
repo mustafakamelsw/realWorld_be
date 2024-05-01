@@ -81,4 +81,14 @@ router.put(
   articleController.updateArticle
 );
 router.get(ARTICLE_URLS.GET_ARTICLES, articleController.getArticles);
+router.post(
+  ARTICLE_URLS.FAVORITE_ARTICLE,
+  checkIsAuth,
+  articleController.favoriteArticle
+);
+router.delete(
+  ARTICLE_URLS.UNFAVORITE_ARTICLE,
+  checkIsAuth,
+  articleController.unfavoriteArticle
+);
 export { router as articleRouter };
