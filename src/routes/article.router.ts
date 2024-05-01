@@ -80,4 +80,5 @@ router.put(
   checkIsAuth,
   articleController.updateArticle
 );
+router.get(ARTICLE_URLS.GET_ARTICLES, articleController.getArticles);
 export { router as articleRouter };

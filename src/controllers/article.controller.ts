@@ -54,7 +54,6 @@ export const createArticle = (req: Request, res: Response) => {
             });
           })
           .catch((err) => {
-            console.log({ err });
             return internalServerError(err, req, res);
           });
       }
@@ -88,18 +87,48 @@ export const updateArticle = async (req: Request, res: Response) => {
           errorDesc: t('ARTICLE.articleNotFound'),
         });
       }
-
       article.title = body.title || article.title;
       article.description = body.description || article.description;
       article.body = body.body || article.body;
       article.tagList = tags.length > 0 ? tags : article.tagList;
-
       await articleRepo.save(article);
-
       return res.status(STATUS_CODES.OK).json({ article });
     })
     .catch((error) => {
-      console.log('Error:', error);
+      return internalServerError(error, req, res);
+    });
+};
+
+export const getArticles = (req: Request, res: Response) => {
+  const articleRepo = AppDataSource.getRepository(Article);
+  const tagRepo = AppDataSource.getRepository(Tag);
+  const userRepo = AppDataSource.getRepository(User);
+  const { t } = req;
+  const { limit, offset } = req.query;
+  const { tag } = req.query;
+  const { author } = req.query;
+  //TODO: add favorite list on article entity
+  const { favorited } = req.query;
+
+  let query = articleRepo.createQueryBuilder('article');
+  if (tag) {
+    query = query.leftJoinAndSelect('article.tagList', 'tag');
+    query = query.where('tag.name = :tag', { tag });
+  }
+  if (author) {
+    query = query.leftJoinAndSelect('article.author', 'author');
+    query = query.where('author.id = :author', { author });
+  }
+
+  query = query.skip(offset ? Number(offset) : 0);
+  query = query.take(limit ? Number(limit) : 10);
+  query = query.orderBy('article.createdAt', 'DESC');
+  query
+    .getMany()
+    .then((articles) => {
+      return res.status(STATUS_CODES.OK).json({ articles });
+    })
+    .catch((error) => {
       return internalServerError(error, req, res);
     });
 };

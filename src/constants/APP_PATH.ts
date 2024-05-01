@@ -25,6 +25,7 @@ export const ARTICLE_URLS = {
   GET_ARTICLE: '/:slug',
   CREATE_ARTICLE: '/',
   UPDATE_ARTICLE: '/:slug',
+  GET_ARTICLES: '',
   // DELETE_ARTICLE: '/:slug',
   // FAVORITE_ARTICLE: '/:slug/favorite',
   // UNFAVORITE_ARTICLE: '/:slug/favorite',
