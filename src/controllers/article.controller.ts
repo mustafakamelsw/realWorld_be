@@ -3,10 +3,11 @@ import { AppDataSource } from '../../ormconfig';
 import { Article } from '../entities/article.entity';
 import { getValidationErrorMessage } from '../utils/errors';
 import { User } from '../entities/user';
-import { internalServerError } from './common.controller';
+import { internalServerError, validationError } from './common.controller';
 import { Tag } from '../entities/tag.entity';
 import { STATUS_CODES } from '../types/statusCodes';
 import { In } from 'typeorm';
+import { Comment } from '../entities/comment.entity';
 
 export const createArticle = (req: Request, res: Response) => {
   const articleRepo = AppDataSource.getRepository(Article);
@@ -109,13 +110,9 @@ export const updateArticle = async (req: Request, res: Response) => {
 
 export const getArticles = (req: Request, res: Response) => {
   const articleRepo = AppDataSource.getRepository(Article);
-  const userRepo = AppDataSource.getRepository(User);
-  const { t } = req;
   const { limit, offset } = req.query;
   const { tag } = req.query;
   const { author } = req.query;
-  //TODO: add favorite list on article entity
-  const { favorited } = req.query;
 
   let query = articleRepo.createQueryBuilder('article');
   if (tag) {
@@ -164,7 +161,6 @@ export const deleteArticle = async (req: Request, res: Response) => {
       });
     }
 
-    // Remove the associations between Tag and Article
     await Promise.all(
       article.tagList.map(async (tag) => {
         tag.articles = tag.articles.filter((a) => a.id !== article.id);
@@ -180,7 +176,6 @@ export const deleteArticle = async (req: Request, res: Response) => {
       message: t('ARTICLE.articleDeleted'),
     });
   } catch (error: any) {
-    console.log('sdfsdfsdf', error);
     return internalServerError(error, req, res);
   }
 };
@@ -291,7 +286,7 @@ export const getFeed = async (req: Request, res: Response) => {
   const articles = await articleRepo.findAndCount({
     where: {
       author: {
-        id: In(follows), // Replace with the actual user IDs from the follow list
+        id: In(follows),
       },
     },
     relations: {
@@ -301,4 +296,116 @@ export const getFeed = async (req: Request, res: Response) => {
   return res
     .status(STATUS_CODES.OK)
     .json({ articles: articles[0], count: articles[1] });
+};
+
+export const createComment = async (req: Request, res: Response) => {
+  const articleRepo = AppDataSource.getRepository(Article);
+  const commentRepo = AppDataSource.getRepository(Comment);
+  const userRepo = AppDataSource.getRepository(User);
+  const { body, user, params, t } = req as any;
+  const currentUser = await userRepo.findOne({
+    where: {
+      id: user.id,
+    },
+  });
+
+  if (!currentUser) {
+    return res.status(STATUS_CODES.NOT_FOUND).json({
+      error: t('COMMON_ERROR.notFound'),
+      errorDesc: t('USER.userNotFound'),
+    });
+  }
+  const article = await articleRepo.findOne({
+    where: {
+      id: Number(params.slug),
+    },
+  });
+  if (!article) {
+    return res.status(STATUS_CODES.NOT_FOUND).json({
+      error: t('COMMON_ERROR.notFound'),
+      errorDesc: t('ARTICLE.articleNotFound'),
+    });
+  }
+  if (!body.body) {
+    return validationError(
+      {
+        body: body?.body,
+      },
+      req,
+      res
+    );
+  } else {
+    const newComment = commentRepo.create({
+      body: body.body,
+      author: currentUser,
+      article: article,
+    });
+    commentRepo
+      .save(newComment)
+      .then((result) => {
+        return res.status(STATUS_CODES.CREATED).json({
+          comment: {
+            id: result.id,
+            body: result.body,
+            author: result.author,
+            article: result.article,
+          },
+        });
+      })
+      .catch((err) => {
+        return internalServerError(err, req, res);
+      });
+  }
+};
+
+export const getComments = async (req: Request, res: Response) => {
+  const { slug } = req.params;
+  const commentRepo = AppDataSource.getRepository(Comment);
+
+  const comments = await commentRepo.findAndCount({
+    where: {
+      article: {
+        id: Number(slug),
+      },
+    },
+  });
+
+  return res.status(STATUS_CODES.OK).json({
+    comments: comments[0],
+    count: comments[1],
+  });
+};
+
+export const deleteComment = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { t, user } = req as any;
+  const commentRepo = AppDataSource.getRepository(Comment);
+
+  const comment = await commentRepo.findOne({
+    where: {
+      id: Number(id),
+    },
+    relations: {
+      article: true,
+      author: true,
+    },
+  });
+  if (!comment) {
+    return res.status(STATUS_CODES.BAD_REQUEST).json({
+      error: t('COMMON_ERROR.notFound'),
+      errorDesc: t('COMMENT.commentNotFound'),
+    });
+  }
+  console.log({ comment });
+  if (comment.author.id !== user?.id) {
+    return res.status(STATUS_CODES.FORBIDDEN).json({
+      error: t('COMMON_ERROR.forbidden'),
+      errorDesc: t('COMMENT.deleteForbidden'),
+    });
+  }
+
+  await commentRepo.delete(comment);
+  return res.status(STATUS_CODES.CREATED).json({
+    message: t('COMMENT.commentDeleted'),
+  });
 };

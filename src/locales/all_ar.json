@@ -1,3 +1,31 @@
 {
-  "welcome": "welcome"
+  "fieldRequired": " خانه مطلوبه",
+  "commonErrors_validationError": "خانه او اكثر مطلوبه",
+  "USER": {
+    "userExists": "المستخدم بالفعل موجود",
+    "emailNotValid": "البريد الالكتروني غير صالح",
+    "loginValidationError": "خانه او اكثر مطلوبه",
+    "emailValidationError": "البريد الالكتروني غير صالح",
+    "userNotFound": "المستخدم غير موجود"
+  },
+  "COMMON_ERROR": {
+    "badRequest": "الطلب غير صحيح",
+    "notFound": "غير موجود",
+    "internalServerError": "حدث خطأ ما",
+    "notAuthorized": "المستخدم غير صالح",
+    "forbidden": "ممنوع",
+    "somethingWentWrong": "حدث خطأ ما",
+    "fieldRequired": " خاند مطلوبه",
+    "articleNotFound": "المقال غير موجود"
+  },
+  "ARTICLE": {
+    "forbidden": "تحديث المقال غير صالح",
+    "deleteForbidden": "لا يمكن حذف هذا المقال",
+    "articleDeleted": "تم حذف المقال"
+  },
+  "COMMENT": {
+    "commentNotFound": "لم يتم اجاد التعليق",
+    "deleteForbidden": "لا يمكن حذف هذا التعليق",
+    "commentDeleted": "تم حذف التعليق"
+  }
 }

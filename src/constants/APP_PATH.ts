@@ -30,15 +30,9 @@ export const ARTICLE_URLS = {
   FAVORITE_ARTICLE: '/:slug/favorite',
   UNFAVORITE_ARTICLE: '/:slug/favorite',
   GET_FEED: '/feed',
-  // GET_TAGS: '/tags',
-  // GET_TAG: '/tags/:tag',
-  // GET_SEARCH: '/search',
-  // GET_COMMENTS: '/:slug/comments',
-  // CREATE_COMMENT: '/:slug/comments',
-  // UPDATE_COMMENT: '/:slug/comments/:commentId',
-  // DELETE_COMMENT: '/:slug/comments/:commentId',
-  // GET_AUTHOR: '/:username/articles',
-  // GET_AUTHOR_FEED: '/:username/feed',
+  GET_COMMENTS: '/:slug/comments',
+  CREATE_COMMENT: '/:slug/comments',
+  DELETE_COMMENT: '/:slug/comments/:id',
 };
 
 export const TAG_URLS = {

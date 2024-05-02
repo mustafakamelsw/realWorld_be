@@ -22,5 +22,10 @@
     "forbidden": "update article is forbidden",
     "deleteForbidden": "delete article is forbidden",
     "articleDeleted": "article deleted"
+  },
+  "COMMENT": {
+    "commentNotFound": "Comment not found",
+    "deleteForbidden": "delete comment is forbidden",
+    "commentDeleted": "comment deleted"
   }
 }

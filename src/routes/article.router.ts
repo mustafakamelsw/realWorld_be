@@ -97,5 +97,19 @@ router.delete(
   articleController.deleteArticle
 );
 
+router.post(
+  ARTICLE_URLS.CREATE_COMMENT,
+  checkIsAuth,
+  articleController.createComment
+);
+
+router.delete(
+  ARTICLE_URLS.DELETE_COMMENT,
+  checkIsAuth,
+  articleController.deleteComment
+);
+
+router.get(ARTICLE_URLS.CREATE_COMMENT, articleController.getComments);
+
 router.get(ARTICLE_URLS.GET_FEED, checkIsAuth, articleController.getFeed);
 export { router as articleRouter };

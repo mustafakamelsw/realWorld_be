@@ -12,6 +12,7 @@ import { AppEntity } from './utils/Entity';
 import { User } from './user';
 import { Tag } from './tag.entity';
 import { AppDataSource } from '../../ormconfig';
+import { Comment } from './comment.entity';
 
 @Entity()
 export class Article extends AppEntity {
@@ -35,6 +36,9 @@ export class Article extends AppEntity {
   @ManyToMany(() => User, (user) => user.favorites)
   @JoinTable()
   favoritedBy!: User[];
+
+  @OneToMany(() => Comment, (comment) => comment.article)
+  comments!: Comment[];
 
   @BeforeRemove()
   async beforeRemove() {
