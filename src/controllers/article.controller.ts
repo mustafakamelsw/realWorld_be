@@ -6,6 +6,7 @@ import { User } from '../entities/user';
 import { internalServerError } from './common.controller';
 import { Tag } from '../entities/tag.entity';
 import { STATUS_CODES } from '../types/statusCodes';
+import { In } from 'typeorm';
 
 export const createArticle = (req: Request, res: Response) => {
   const articleRepo = AppDataSource.getRepository(Article);
@@ -50,6 +51,7 @@ export const createArticle = (req: Request, res: Response) => {
                 description: result.description,
                 body: result.body,
                 tagList: result.tagList,
+                author: result.author,
               },
             });
           })
@@ -107,7 +109,6 @@ export const updateArticle = async (req: Request, res: Response) => {
 
 export const getArticles = (req: Request, res: Response) => {
   const articleRepo = AppDataSource.getRepository(Article);
-  const tagRepo = AppDataSource.getRepository(Tag);
   const userRepo = AppDataSource.getRepository(User);
   const { t } = req;
   const { limit, offset } = req.query;
@@ -137,6 +138,51 @@ export const getArticles = (req: Request, res: Response) => {
     .catch((error) => {
       return internalServerError(error, req, res);
     });
+};
+
+export const deleteArticle = async (req: Request, res: Response) => {
+  const { params, user, t } = req as any;
+  const articleRepo = AppDataSource.getRepository(Article);
+
+  try {
+    const article = await articleRepo.findOne({
+      where: { id: params.slug },
+      relations: ['author', 'tagList'],
+    });
+
+    if (!article) {
+      return res.status(STATUS_CODES.NOT_FOUND).json({
+        error: t('COMMON_ERROR.notFound'),
+        errorDesc: t('ARTICLE.articleNotFound'),
+      });
+    }
+
+    if (article.author.id !== user.id) {
+      return res.status(STATUS_CODES.FORBIDDEN).json({
+        error: t('COMMON_ERROR.forbidden'),
+        errorDesc: t('ARTICLE.deleteForbidden'),
+      });
+    }
+
+    // Remove the associations between Tag and Article
+    await Promise.all(
+      article.tagList.map(async (tag) => {
+        tag.articles = tag.articles.filter((a) => a.id !== article.id);
+        const tagRepo = AppDataSource.getRepository(Tag);
+        await tagRepo.save(tag);
+      })
+    );
+
+    // Now delete the article
+    await articleRepo.delete(article.id);
+
+    return res.status(STATUS_CODES.CREATED).json({
+      message: t('ARTICLE.articleDeleted'),
+    });
+  } catch (error: any) {
+    console.log('sdfsdfsdf', error);
+    return internalServerError(error, req, res);
+  }
 };
 
 export const favoriteArticle = (req: Request, res: Response) => {
@@ -222,4 +268,37 @@ export const unfavoriteArticle = (req: Request, res: Response) => {
     .catch((error) => {
       return internalServerError(error, req, res);
     });
+};
+
+export const getFeed = async (req: Request, res: Response) => {
+  const { user, t } = req as any;
+  const userRepo = AppDataSource.getRepository(User);
+  const articleRepo = AppDataSource.getRepository(Article);
+  const currentUser = await userRepo.findOne({
+    where: {
+      id: user.id,
+    },
+  });
+  if (!currentUser) {
+    return res.status(STATUS_CODES.NOT_FOUND).json({
+      error: t('COMMON_ERROR.notFound'),
+      errorDesc: t('USER.userNotFound'),
+    });
+  }
+
+  const follows = currentUser.follow?.map((id) => Number(id));
+
+  const articles = await articleRepo.findAndCount({
+    where: {
+      author: {
+        id: In(follows), // Replace with the actual user IDs from the follow list
+      },
+    },
+    relations: {
+      author: true,
+    },
+  });
+  return res
+    .status(STATUS_CODES.OK)
+    .json({ articles: articles[0], count: articles[1] });
 };

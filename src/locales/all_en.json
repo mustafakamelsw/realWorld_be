@@ -19,6 +19,8 @@
     "articleNotFound": "Article not found"
   },
   "ARTICLE": {
-    "forbidden": "update article is forbidden"
+    "forbidden": "update article is forbidden",
+    "deleteForbidden": "delete article is forbidden",
+    "articleDeleted": "article deleted"
   }
 }

@@ -91,4 +91,11 @@ router.delete(
   checkIsAuth,
   articleController.unfavoriteArticle
 );
+router.delete(
+  ARTICLE_URLS.DELETE_ARTICLE,
+  checkIsAuth,
+  articleController.deleteArticle
+);
+
+router.get(ARTICLE_URLS.GET_FEED, checkIsAuth, articleController.getFeed);
 export { router as articleRouter };

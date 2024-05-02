@@ -6,7 +6,6 @@ import { Article } from './article.entity';
 export class Tag extends AppEntity {
   @Column({ unique: true })
   name!: string;
-  @ManyToMany(() => Article, (article) => article.tagList)
-  @JoinTable()
+  @ManyToMany(() => Article, (article) => article.tagList, {})
   articles!: Article[];
 }

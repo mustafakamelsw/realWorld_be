@@ -1,5 +1,5 @@
 import { IsEmail, Matches } from 'class-validator';
-import { Column, Entity, ManyToMany } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 import { Article } from './article.entity';
 import { AppEntity } from './utils/Entity';
 
@@ -21,4 +21,6 @@ export class User extends AppEntity {
   follow!: number[];
   @ManyToMany(() => Article, (article) => article.favoritedBy)
   favorites!: Article[];
+  @OneToMany(() => Article, (article) => article.author)
+  articles!: Article[];
 }
